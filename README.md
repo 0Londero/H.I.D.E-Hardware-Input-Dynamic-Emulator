@@ -109,6 +109,17 @@ Passo a passo resumido:
 
 Avisos: nunca solde alimentado; nunca inverta 5V/GND; nunca ligue VBUS no 3V3.
 
+<table>
+  <tr>
+    <td align="center"><img src="readmeassets/pico-usb-host-mouse_bb.png" alt="Montagem em protoboard: Raspberry Pi Pico com adaptador USB-A fêmea" width="400"></td>
+    <td align="center"><img src="readmeassets/pico-usb-host-mouse_schem.png" alt="Esquemático: Raspberry Pi Pico com adaptador USB-A fêmea" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Montagem (breadboard)</sub></td>
+    <td align="center"><sub>Esquemático</sub></td>
+  </tr>
+</table>
+
 ## Firmware (compilar e gravar)
 
 1. [Arduino IDE](https://www.arduino.cc/en/software) com o core
