@@ -18,6 +18,7 @@
 - [Materiais](#materiais)
 - [Montagem (solda)](#montagem-solda)
 - [Firmware (compilar e gravar)](#firmware-compilar-e-gravar)
+- [Links úteis](#links-uteis)
 - [Site (configurar)](#site-configurar)
 - [Controles pelo mouse](#controles-pelo-mouse-sem-o-site)
 - [Polling rate do mouse](#polling-rate-do-mouse)
@@ -111,11 +112,23 @@ Avisos: nunca solde alimentado; nunca inverta 5V/GND; nunca ligue VBUS no 3V3.
 
 ## Firmware (compilar e gravar)
 
-1. Arduino IDE com o core **Raspberry Pi Pico/RP2040** (Earle Philhower).
-2. Bibliotecas: **Adafruit TinyUSB**, **Pico-PIO-USB** (sekigon-gps), **ArduinoJson v6**.
+1. [Arduino IDE](https://www.arduino.cc/en/software) com o core
+   [Raspberry Pi Pico/RP2040](https://github.com/earlephilhower/arduino-pico) (Earle Philhower).
+2. Bibliotecas: [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino),
+   [Pico-PIO-USB](https://github.com/sekigon-gps/Pico-PIO-USB) (sekigon-gps),
+   [ArduinoJson v6](https://arduinojson.org/).
 3. Placa "Raspberry Pi Pico"; *Tools → USB Stack* = "Adafruit TinyUSB" e
    *Tools → CPU Speed* = 240 MHz.
 4. Abra `firmware/firmware.ino` e compile/envie.
+
+## Links úteis
+
+- [Arduino IDE](https://www.arduino.cc/en/software)
+- [Raspberry Pi Pico (página oficial)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
+- [Core Arduino para RP2040, por Earle Philhower](https://github.com/earlephilhower/arduino-pico)
+- [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino)
+- [Pico-PIO-USB (sekigon-gps)](https://github.com/sekigon-gps/Pico-PIO-USB)
+- [ArduinoJson](https://arduinojson.org/)
 
 ## Site (configurar)
 
