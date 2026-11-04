@@ -89,6 +89,8 @@ Notas:
 
 ## Montagem (solda)
 
+![Diagrama de montagem: USB-A fêmea para Raspberry Pi Pico](readmeassets/montagem-pico-usb-a.svg)
+
 Ligação do conector USB-A fêmea ao Pico:
 
 | USB-A fêmea | Pico | Detalhe |

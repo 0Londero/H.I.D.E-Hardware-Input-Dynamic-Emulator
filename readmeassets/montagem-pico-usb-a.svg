@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 890" width="1280" height="890" role="img" aria-labelledby="titulo descricao">
+  <title id="titulo">Montagem: USB-A fêmea para Raspberry Pi Pico (RP2040)</title>
+  <desc id="descricao">VBUS do USB-A no pino 40 do Pico; D- no pino 2 (GP1) via resistor; D+ no pino 1 (GP0) via resistor; GND no pino 3.</desc>
+
+  <defs>
+    <pattern id="pads" patternUnits="userSpaceOnUse" x="760" y="140" width="210" height="24">
+      <circle cx="12" cy="12" r="7.5" fill="#D4A72C"/>
+      <circle cx="12" cy="12" r="3.5" fill="#0D1117"/>
+      <circle cx="198" cy="12" r="7.5" fill="#D4A72C"/>
+      <circle cx="198" cy="12" r="3.5" fill="#0D1117"/>
+    </pattern>
+    <g id="resistor">
+      <rect x="0" y="-8" width="60" height="16" rx="6" fill="#D9B98A" stroke="#8C6D3F"/>
+      <rect x="10" y="-8" width="6" height="16" fill="#D1242F"/>
+      <rect x="21" y="-8" width="6" height="16" fill="#D1242F"/>
+      <rect x="32" y="-8" width="6" height="16" fill="#111111"/>
+      <rect x="46" y="-8" width="6" height="16" fill="#C69026"/>
+    </g>
+    <g id="furo">
+      <circle r="10" fill="#D4A72C"/>
+      <circle r="6" fill="#0D1117"/>
+    </g>
+  </defs>
+
+  <style>
+    text { font-family: "Segoe UI", Inter, Helvetica, Arial, sans-serif; fill: #E6EDF3; }
+    .titulo { font-size: 30px; font-weight: 700; }
+    .sub { font-size: 15px; fill: #8B949E; }
+    .rotulo { font-size: 14px; font-weight: 600; }
+    .nota { font-size: 13.5px; fill: #C9D1D9; }
+    .pequeno { font-size: 12.5px; fill: #8B949E; }
+    .pcb { font-size: 10px; fill: #FFFFFF; font-weight: 600; }
+    .th { font-size: 14px; font-weight: 700; }
+    .td { font-size: 15px; }
+    .passo { font-size: 14px; }
+    .fio { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+
+  <rect width="1280" height="890" fill="#0D1117"/>
+
+  <!-- Título -->
+  <text class="titulo" x="640" y="46" text-anchor="middle">Montagem: USB-A fêmea → Raspberry Pi Pico (RP2040)</text>
+  <text class="sub" x="640" y="70" text-anchor="middle">Pico visto pela face superior, com os componentes para cima</text>
+
+  <!-- Breakout USB-A -->
+  <text class="rotulo" x="168" y="139" text-anchor="middle">Breakout USB-A fêmea</text>
+  <rect x="70" y="150" width="230" height="220" rx="8" fill="#1F3A6E" stroke="#3B5B9A"/>
+  <rect x="36" y="215" width="120" height="100" rx="4" fill="#B1BAC4" stroke="#6E7681"/>
+  <rect x="36" y="230" width="12" height="70" fill="#30363D"/>
+  <text x="102" y="271" text-anchor="middle" font-size="16" font-weight="700" style="fill:#24292F">USB-A</text>
+  <text class="pequeno" x="78" y="350" style="fill:#C9D1D9">← mouse ou dongle</text>
+  <g class="rotulo" text-anchor="end">
+    <text x="268" y="195">VBUS</text>
+    <text x="268" y="245">D-</text>
+    <text x="268" y="295">D+</text>
+    <text x="268" y="345">GND</text>
+  </g>
+
+  <!-- Raspberry Pi Pico -->
+  <rect x="760" y="128" width="210" height="504" rx="6" fill="#16803F" stroke="#0F5F2E"/>
+  <rect x="760" y="140" width="210" height="480" fill="url(#pads)"/>
+  <rect x="835" y="116" width="60" height="42" rx="3" fill="#B1BAC4" stroke="#6E7681"/>
+  <rect x="845" y="120" width="40" height="9" rx="2" fill="#30363D"/>
+  <text class="pcb" x="865" y="172" text-anchor="middle">USB</text>
+  <rect x="815" y="190" width="30" height="38" rx="2" fill="#D0D7DE"/>
+  <circle cx="830" cy="209" r="9" fill="#FFFFFF" stroke="#8B949E"/>
+  <text class="pcb" x="830" y="242" text-anchor="middle">BOOTSEL</text>
+  <rect x="899" y="178" width="14" height="8" fill="#F0F6FC"/>
+  <text class="pcb" x="906" y="200" text-anchor="middle">LED</text>
+  <rect x="825" y="330" width="80" height="80" rx="2" fill="#161B22" stroke="#484F58"/>
+  <text x="865" y="375" text-anchor="middle" font-size="14" font-weight="700">RP2040</text>
+  <rect x="845" y="440" width="40" height="18" rx="3" fill="#B1BAC4"/>
+  <text x="865" y="515" text-anchor="middle" font-size="15" font-weight="700">Raspberry</text>
+  <text x="865" y="535" text-anchor="middle" font-size="15" font-weight="700">Pi Pico</text>
+  <use href="#furo" x="798" y="146"/>
+  <use href="#furo" x="932" y="146"/>
+  <use href="#furo" x="798" y="614"/>
+  <use href="#furo" x="932" y="614"/>
+  <rect x="845" y="618" width="10" height="14" fill="#D4A72C"/>
+  <rect x="860" y="618" width="10" height="14" fill="#D4A72C"/>
+  <rect x="875" y="618" width="10" height="14" fill="#D4A72C"/>
+  <text class="pcb" x="865" y="610" text-anchor="middle">DEBUG</text>
+  <text class="rotulo" x="865" y="656" text-anchor="middle">Raspberry Pi Pico (RP2040)</text>
+
+  <!-- Fios -->
+  <path class="fio" stroke="#F85149" d="M285 190 H340 Q360 190 360 170 V120 Q360 100 380 100 H985 Q1005 100 1005 120 V132 Q1005 152 985 152 H958"/>
+  <path class="fio" stroke="#3FB950" d="M285 290 C310 290 315 244 340 244 C365 244 365 220 390 220 C415 220 415 244 440 244 C465 244 465 220 490 220 C515 220 515 152 540 152 H772"/>
+  <path class="fio" stroke="#F0F6FC" d="M285 240 C310 240 315 220 340 220 C365 220 365 244 390 244 C415 244 415 220 440 220 C465 220 465 244 490 244 C515 244 515 176 540 176 H772"/>
+  <path fill="none" stroke="#8B949E" stroke-width="7" stroke-linecap="round" d="M285 340 H520 C570 340 570 200 620 200 H772"/>
+  <path fill="none" stroke="#0A0A0A" stroke-width="4" stroke-linecap="round" d="M285 340 H520 C570 340 570 200 620 200 H772"/>
+
+  <!-- Resistores -->
+  <use href="#resistor" x="560" y="152"/>
+  <use href="#resistor" x="560" y="176"/>
+
+  <!-- Pontos de solda -->
+  <g fill="#D0D7DE" stroke-width="3">
+    <circle cx="285" cy="190" r="8" stroke="#F85149"/>
+    <circle cx="285" cy="240" r="8" stroke="#F0F6FC"/>
+    <circle cx="285" cy="290" r="8" stroke="#3FB950"/>
+    <circle cx="285" cy="340" r="8" stroke="#8B949E"/>
+    <circle cx="772" cy="152" r="8" stroke="#3FB950"/>
+    <circle cx="772" cy="176" r="8" stroke="#F0F6FC"/>
+    <circle cx="772" cy="200" r="8" stroke="#8B949E"/>
+    <circle cx="958" cy="152" r="8" stroke="#F85149"/>
+  </g>
+
+  <!-- Rótulos dos fios e pinos -->
+  <text class="rotulo" x="620" y="92" text-anchor="middle" style="fill:#FF7B72">VBUS (5 V)</text>
+  <text class="nota" x="590" y="128" text-anchor="middle">Resistores de 22 Ω (33 Ω também funciona)</text>
+  <g class="rotulo" text-anchor="end">
+    <text x="752" y="146" style="fill:#56D364">pino 1 · GP0</text>
+    <text x="752" y="170">pino 2 · GP1</text>
+    <text x="752" y="194" style="fill:#C9D1D9">pino 3 · GND</text>
+  </g>
+  <text class="rotulo" x="1020" y="157" style="fill:#FF7B72">pino 40 · VBUS</text>
+  <text class="pequeno" x="1020" y="177">nunca no 3V3</text>
+  <text class="nota" x="350" y="272">Fios trançados e curtos</text>
+  <text class="nota" x="350" y="290">(menos de 10 cm)</text>
+
+  <!-- Nota sobre o lado da solda -->
+  <rect x="1000" y="225" width="240" height="132" rx="8" fill="#161B22" stroke="#30363D"/>
+  <text class="rotulo" x="1016" y="252" style="fill:#E3B341">Atenção ao lado da solda</text>
+  <g class="nota">
+    <text x="1016" y="277">Os nomes dos pinos ficam</text>
+    <text x="1016" y="296">impressos na face inferior.</text>
+    <text x="1016" y="315">Vista por baixo, a placa fica</text>
+    <text x="1016" y="334">com os lados invertidos.</text>
+  </g>
+
+  <!-- Tabela -->
+  <g>
+    <rect x="70" y="410" width="660" height="196" rx="8" fill="#161B22" stroke="#30363D"/>
+    <line x1="70" y1="446" x2="730" y2="446" stroke="#30363D"/>
+    <line x1="70" y1="486" x2="730" y2="486" stroke="#21262D"/>
+    <line x1="70" y1="526" x2="730" y2="526" stroke="#21262D"/>
+    <line x1="70" y1="566" x2="730" y2="566" stroke="#21262D"/>
+    <text class="th" x="90" y="433">USB-A fêmea</text>
+    <text class="th" x="290" y="433">Pico</text>
+    <text class="th" x="520" y="433">Detalhe</text>
+
+    <circle cx="97" cy="466" r="6" fill="#F85149"/>
+    <text class="td" x="114" y="471">VBUS (5 V)</text>
+    <text class="td" x="290" y="471">VBUS (pino 40)</text>
+    <text class="td" x="520" y="471">nunca no 3V3</text>
+
+    <circle cx="97" cy="506" r="6" fill="#F0F6FC"/>
+    <text class="td" x="114" y="511">D-</text>
+    <text class="td" x="290" y="511">GP1 (pino 2)</text>
+    <text class="td" x="520" y="511">via resistor</text>
+
+    <circle cx="97" cy="546" r="6" fill="#3FB950"/>
+    <text class="td" x="114" y="551">D+</text>
+    <text class="td" x="290" y="551">GP0 (pino 1)</text>
+    <text class="td" x="520" y="551">via resistor</text>
+
+    <circle cx="97" cy="586" r="6" fill="#0A0A0A" stroke="#8B949E" stroke-width="2"/>
+    <text class="td" x="114" y="591">GND</text>
+    <text class="td" x="290" y="591">GND (pino 3)</text>
+  </g>
+
+  <!-- Passo a passo -->
+  <g>
+    <rect x="40" y="680" width="288" height="104" rx="8" fill="#161B22" stroke="#30363D"/>
+    <circle cx="70" cy="710" r="15" fill="#1F6FEB"/>
+    <text x="70" y="716" text-anchor="middle" font-size="16" font-weight="700">1</text>
+    <text class="passo" x="96" y="706">Meça o conector</text>
+    <text class="passo" x="96" y="726">com multímetro</text>
+    <text class="pequeno" x="96" y="750">(não confie só no silk screen)</text>
+
+    <rect x="344" y="680" width="288" height="104" rx="8" fill="#161B22" stroke="#30363D"/>
+    <circle cx="374" cy="710" r="15" fill="#1F6FEB"/>
+    <text x="374" y="716" text-anchor="middle" font-size="16" font-weight="700">2</text>
+    <text class="passo" x="400" y="706">Solde GND, VBUS e depois</text>
+    <text class="passo" x="400" y="726">D+/D- com os resistores</text>
+
+    <rect x="648" y="680" width="288" height="104" rx="8" fill="#161B22" stroke="#30363D"/>
+    <circle cx="678" cy="710" r="15" fill="#1F6FEB"/>
+    <text x="678" y="716" text-anchor="middle" font-size="16" font-weight="700">3</text>
+    <text class="passo" x="704" y="706">Torça e encurte os fios</text>
+    <text class="passo" x="704" y="726">de dados (menos de 10 cm)</text>
+
+    <rect x="952" y="680" width="288" height="104" rx="8" fill="#161B22" stroke="#30363D"/>
+    <circle cx="982" cy="710" r="15" fill="#1F6FEB"/>
+    <text x="982" y="716" text-anchor="middle" font-size="16" font-weight="700">4</text>
+    <text class="passo" x="1008" y="706">Teste 5 V e ausência de</text>
+    <text class="passo" x="1008" y="726">curto antes de plugar</text>
+    <text class="passo" x="1008" y="746">o dongle</text>
+  </g>
+
+  <!-- Avisos -->
+  <rect x="40" y="804" width="1200" height="56" rx="8" fill="#3D1418" stroke="#F85149"/>
+  <path d="M238 820 L254 846 H222 Z" fill="#F85149"/>
+  <rect x="236.8" y="828" width="2.6" height="10" fill="#0D1117"/>
+  <rect x="236.8" y="840" width="2.6" height="3" fill="#0D1117"/>
+  <text x="270" y="838" font-size="17" font-weight="600">Nunca solde alimentado  •  Nunca inverta 5 V/GND  •  Nunca ligue VBUS no 3V3</text>
+</svg>
