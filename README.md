@@ -232,4 +232,6 @@ atual é **1.0.0**, e as mudanças de cada versão são registradas no
 
 ## Licença
 
-A definir.
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
+
+© 2026 Otávio Londero.
