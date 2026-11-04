@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<title>HIDE · Hardware Input Dynamic Emulator</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23000'/%3E%3Cpath d='M3 16h4V8h5v8h4V8h5' fill='none' stroke='%23b08d5a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar reveal" style="--i:0">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M3 16h4V8h5v8h4V8h5"/></svg></span>
+      <div class="brand-text">
+        <h1>HIDE</h1>
+        <p>Hardware Input Dynamic Emulator</p>
+        <div class="brand-meta">
+          <span class="hw-name">Raspberry Pi Pico <span class="hw-chip">(RP2040)</span></span>
+          <button class="info-btn" id="hw-info-btn" type="button" aria-expanded="false" aria-controls="hw-info-panel" aria-label="Ver especificações do hardware" title="Especificações do hardware">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5h.01"/></svg>
+          </button>
+          <span class="meta-versions">
+            <span class="app-version" title="Versão do aplicativo">App <span id="app-version">v1.0</span></span>
+            <span class="version-sep" aria-hidden="true">·</span>
+            <span class="firmware-version" title="Versão do firmware">Firmware <span id="firmware-version">v1.0</span></span>
+          </span>
+        </div>
+      </div>
+      <div id="hw-info-panel" class="hw-info-panel" role="region" aria-labelledby="hw-info-title" aria-label="Especificações do hardware" hidden>
+        <h2 class="hw-info-title" id="hw-info-title">Raspberry Pi Pico</h2>
+        <p class="hw-info-chip">Microcontrolador RP2040</p>
+        <dl class="hw-info-list">
+          <div class="hw-info-row"><dt>CPU</dt><dd>2 núcleos Arm Cortex-M0+</dd></div>
+          <div class="hw-info-row"><dt>Clock</dt><dd>133 MHz (240 MHz no firmware, via PIO-USB)</dd></div>
+          <div class="hw-info-row"><dt>SRAM</dt><dd>264 KB</dd></div>
+          <div class="hw-info-row"><dt>Flash</dt><dd>2 MB</dd></div>
+          <div class="hw-info-row"><dt>USB</dt><dd>Device nativo + Host via PIO-USB</dd></div>
+          <div class="hw-info-row"><dt>FPU</dt><dd>Sem FPU de hardware</dd></div>
+        </dl>
+        <button type="button" class="hw-info-close" id="hw-info-close">Fechar</button>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <div class="status" id="status" data-state="disconnected" role="status">
+        <span class="led" aria-hidden="true"></span>
+        <span id="status-text">Desconectado</span>
+      </div>
+      <button class="icon-btn" id="sound-toggle" type="button" aria-pressed="true" aria-label="Efeitos sonoros" title="Efeitos sonoros">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/>
+          <path class="wave" d="M15.5 9a4 4 0 0 1 0 6"/>
+          <path class="wave" d="M18 6.5a7.5 7.5 0 0 1 0 11"/>
+          <path class="mute" d="M16 9.5l5 5M21 9.5l-5 5"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="toolbar reveal" style="--i:1">
+    <nav class="profiles" role="tablist" aria-label="Perfis">
+      <span class="profile-indicator" aria-hidden="true"></span>
+      <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-profile="profile-a">Perfil A</button>
+      <button class="tab-btn" type="button" role="tab" aria-selected="false" data-profile="profile-b">Perfil B</button>
+    </nav>
+    <div class="config-status" id="config-status" data-state="none" role="status">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>
+      <span class="config-name" id="config-name">Nenhuma config carregada</span>
+      <span class="config-badge" id="config-badge">Valores padrão</span>
+    </div>
+  </div>
+
+  <main class="panels" id="dashboard-view">
+    <!-- ==================== RECOIL CONTROL ==================== -->
+    <section class="panel reveal" style="--i:2" id="recoil-panel">
+      <header class="panel-head">
+        <div class="panel-head-left"><h2>Recoil Control</h2></div>
+        <div class="panel-head-right">
+          <button class="panel-reset" type="button" id="reset-recoil-btn" title="Zerar todos os valores de Recoil" aria-label="Resetar Recoil">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <label class="switch" title="Ativar recoil control">
+            <input type="checkbox" id="recoil-enabled" data-panel="recoil-panel">
+            <span class="switch-track"><span class="switch-knob"></span></span>
+            <span class="sr-only">Ativar recoil control</span>
+          </label>
+        </div>
+      </header>
+      <div class="panel-body">
+        <div class="motion-grid">
+          <div class="controls">
+            <div class="control">
+              <div class="control-head">
+                <label for="y-down">Recoil Y · para baixo</label>
+                <span class="value-box"><input type="number" id="y-down" min="0" max="200" step="0.01" value="0.00" inputmode="decimal"><span class="unit">counts/s</span></span>
+              </div>
+              <input type="range" id="y-down-slider" min="0" max="200" step="0.01" value="0.00" aria-label="Recoil Y para baixo">
+            </div>
+            <div class="control">
+              <div class="control-head">
+                <label for="y-up">Recoil Y · para cima</label>
+                <span class="value-box"><input type="number" id="y-up" min="0" max="100" step="0.01" value="0.00" inputmode="decimal"><span class="unit">counts/s</span></span>
+              </div>
+              <input type="range" id="y-up-slider" min="0" max="100" step="0.01" value="0.00" aria-label="Recoil Y para cima">
+            </div>
+            <div class="control">
+              <div class="control-head">
+                <label for="x-left">Recoil X · esquerda</label>
+                <span class="value-box"><input type="number" id="x-left" min="0" max="100" step="0.01" value="0.00" inputmode="decimal"><span class="unit">counts/s</span></span>
+              </div>
+              <input type="range" id="x-left-slider" min="0" max="100" step="0.01" value="0.00" aria-label="Recoil X para a esquerda">
+            </div>
+            <div class="control">
+              <div class="control-head">
+                <label for="x-right">Recoil X · direita</label>
+                <span class="value-box"><input type="number" id="x-right" min="0" max="100" step="0.01" value="0.00" inputmode="decimal"><span class="unit">counts/s</span></span>
+              </div>
+              <input type="range" id="x-right-slider" min="0" max="100" step="0.01" value="0.00" aria-label="Recoil X para a direita">
+            </div>
+          </div>
+          <figure class="vector">
+            <canvas id="vector-canvas" aria-hidden="true"></canvas>
+            <figcaption id="vector-readout">Δx +0.00 · Δy +0.00</figcaption>
+          </figure>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label for="update-delay">Atraso de atualização</label>
+            <span class="value-box"><input type="number" id="update-delay" min="0" max="100" value="0" inputmode="numeric"><span class="unit">ms</span></span>
+          </div>
+          <div class="field">
+            <label for="trigger">Gatilho de ativação</label>
+            <select id="trigger">
+              <option value="secondary+primary">Botão secundário + principal</option>
+              <option value="secondary">Apenas botão secundário</option>
+              <option value="primary">Apenas botão principal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-tip" role="note">
+          <strong>Unidade (counts/s):</strong> é o movimento que o Pico envia ao PC por segundo. O efeito em pixels na tela depende do seu DPI, sensibilidade, FOV e resolução; calibre testando no jogo.
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FAST-FIRE ==================== -->
+    <section class="panel reveal" style="--i:3" id="cps-panel">
+      <header class="panel-head">
+        <div class="panel-head-left"><h2>Fast-fire</h2></div>
+        <div class="panel-head-right">
+          <button class="panel-reset" type="button" id="reset-fastfire-btn" title="Resetar Fast-fire para 13 CPS" aria-label="Resetar Fast-fire">
+            <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <label class="switch" title="Ativar fast-fire">
+            <input type="checkbox" id="cps-master" data-panel="cps-panel">
+            <span class="switch-track"><span class="switch-knob"></span></span>
+            <span class="sr-only">Ativar fast-fire</span>
+          </label>
+        </div>
+      </header>
+      <div class="panel-body">
+        <div class="scope">
+          <canvas id="cps-canvas" aria-hidden="true"></canvas>
+          <span class="scope-label">1 s</span>
+        </div>
+        <div class="frequency">
+          <input type="number" id="cps" class="big-number" min="1" max="15" step="1" value="13" inputmode="numeric" aria-label="Fast-fire por segundo">
+          <span class="frequency-unit">tiros<br>por segundo</span>
+        </div>
+        <input type="range" id="cps-slider" min="1" max="15" step="1" value="13" aria-label="Fast-fire">
+        <div class="range-scale"><span>1</span><span id="cps-max-label">15</span></div>
+
+        <label class="toggle-row">
+          <span class="switch small">
+            <input type="checkbox" id="override-checkbox">
+            <span class="switch-track"><span class="switch-knob"></span></span>
+          </span>
+          Desbloquear Fast-fire avançado (até 20 CPS)
+        </label>
+
+        <div class="warning" id="warning-box">
+          <div>
+            <div class="warning-content">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></svg>
+              <p>O firmware aceita até 20 CPS (intervalo mínimo de 50 ms). Acima de 15 CPS a cadência de cliques fica acima do ritmo humano e tende a parecer artificial, inclusive para sistemas anti-cheat.</p>
+            </div>
+          </div>
+        </div>
+        <div class="control-tip" role="note">
+          <strong>Controles pelo mouse (físico):</strong> segure o <strong>botão do meio</strong> por 2 segundos para ligar/desligar o fast-fire. Com o botão do meio segurado, gire o <strong>scroll</strong> para ajustar a velocidade (CPS). Com o botão do meio segurado, o LED do Pico pisca na velocidade configurada; fora disso, fica aceso quando o fast-fire está ligado e apagado quando está desligado.
+        </div>
+
+        <div class="rpm-converter" role="group" aria-label="Conversor de fire-rate">
+          <label class="rpm-head" for="rpm-input">Fire-rate da arma (RPM)</label>
+          <div class="rpm-row">
+            <input type="number" id="rpm-input" min="60" max="1200" step="1" placeholder="ex.: 600" inputmode="numeric">
+            <span class="rpm-eq">=</span>
+            <span class="rpm-result"><strong id="rpm-result">10</strong> CPS</span>
+            <button class="btn" type="button" id="rpm-apply-btn">Aplicar</button>
+          </div>
+          <p class="rpm-note">CPS = RPM ÷ 60. Clique em "Aplicar" para usar esse valor no fast-fire (casa com o limite de disparo da arma).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== BEHAVIORAL BIOMETRICS SPOOFING ==================== -->
+  <section class="modules-view reveal" id="modules-view" hidden aria-label="Behavioral Biometrics Spoofing">
+    <header class="modules-heading">
+      <div>
+        <h2>Behavioral Biometrics Spoofing</h2>
+        <p>Valores reais do firmware, alterar aqui só tem efeito quando o firmware ler o objeto <code style="font-family:var(--font-mono);color:var(--bronze);font-size:.82em;">organic</code>.</p>
+      </div>
+      <div class="modules-actions">
+        <button class="btn danger" type="button" id="reset-organic-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset to Firmware Defaults
+        </button>
+      </div>
+    </header>
+
+    <!-- ACCORDION 1: FAST-FIRE -->
+    <details class="tech-accordion" open>
+      <summary>Fast-fire <span class="acc-count">4 TÉCNICAS</span></summary>
+      <div class="accordion-content">
+        <div class="natural-grid">
+
+          <article class="ref-card" data-tech="uniform">
+            <header class="ref-head">
+              <div><h4>Uniforme</h4><p class="ref-name">Uniform distribution</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="uniform" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Random walk do intervalo: <code style="font-family:var(--font-mono);color:var(--bronze);">biologicalOffset += random(-4, 5)</code> clampado em [−15, +25] ms.</p>
+            <div class="ref-meta">
+              <code>biologicalOffset += random(-4, 5)</code>
+              <span class="ref-status" data-s="rf">Rapid-fire</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="gaussian">
+            <header class="ref-head">
+              <div><h4>Gaussiana / Normal</h4><p class="ref-name">Gaussian distribution</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="gaussian" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Duração do hold e do intervalo moduladas por distribuição normal. Soma de 4 amostras pelo TLC.</p>
+            <div class="ref-meta">
+              <code>getGaussianRandom(14, 3)</code>
+              <span class="ref-status" data-s="ambos">Ambos</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="randomwalk">
+            <header class="ref-head">
+              <div><h4>Random Walk</h4><p class="ref-name">Simple random walk</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="randomwalk" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Offset biológico acumulado (fadiga/respiração) que modula o intervalo base do fast-fire.</p>
+            <div class="ref-meta">
+              <code>offset += random(-4, 5)</code>
+              <span class="ref-status" data-s="rf">Rapid-fire</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="jitter-uniform">
+            <header class="ref-head">
+              <div><h4>Jitter Uniforme</h4><p class="ref-name">Uniform jitter ±1 px</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="jitterUniform" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Deslocamento de ±1 px por eixo no instante do clique, quebra anti-pixel-locking.</p>
+            <div class="ref-meta">
+              <code>x += random(-1, 2)</code>
+              <span class="ref-status" data-s="rf">Rapid-fire</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </details>
+
+    <!-- ACCORDION 2: RECOIL CONTROL -->
+    <details class="tech-accordion" open>
+      <summary>Recoil Control <span class="acc-count">12 TÉCNICAS</span></summary>
+      <div class="accordion-content">
+        <div class="natural-grid">
+
+          <article class="ref-card" data-tech="reaction">
+            <header class="ref-head">
+              <div><h4>Delay de Reação</h4><p class="ref-name">Reaction time (log-normal)</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="reaction" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Tempo entre puxar o gatilho e a 1ª correção. A assinatura humana mais importante.</p>
+            <div class="ref-params">
+              <label>Mín (ms)<input type="number" data-organic-val="reaction.minMs" value="100" min="0" max="500" step="10"></label>
+              <label>Máx (ms)<input type="number" data-organic-val="reaction.maxMs" value="380" min="0" max="1000" step="10"></label>
+              <label>Mediana (ms)<input type="number" data-organic-val="reaction.medianMs" value="200" min="0" max="500" step="5"></label>
+              <label>Sigma<input type="number" data-organic-val="reaction.sigma" value="0.25" min="0" max="1" step="0.05"></label>
+              <label>Distraído %<input type="number" data-organic-val="reaction.distractPct" value="3" min="0" max="100" step="1"></label>
+              <label>Distraído +ms<input type="number" data-organic-val="reaction.distractAdd" value="250" min="0" max="500" step="10"></label>
+            </div>
+            <div class="ref-meta">
+              <code>logN(median, σ)</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="lognormal">
+            <header class="ref-head">
+              <div><h4>Log-normal · Step</h4><p class="ref-name">Step duration (log-normal)</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="lognormal" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Duração de cada sub-movimento. Cauda longa à direita permite picos de 100+ ms.</p>
+            <div class="ref-params">
+              <label>Mediana (ms)<input type="number" data-organic-val="lognormal.stepMedianMs" value="50" min="5" max="300" step="5"></label>
+              <label>Sigma<input type="number" data-organic-val="lognormal.stepSigma" value="0.35" min="0" max="1" step="0.05"></label>
+              <label>Mín (ms)<input type="number" data-organic-val="lognormal.stepMinMs" value="25" min="0" max="200" step="5"></label>
+              <label>Máx (ms)<input type="number" data-organic-val="lognormal.stepMaxMs" value="150" min="0" max="500" step="10"></label>
+            </div>
+            <div class="ref-meta">
+              <code>exp(N(ln(med), σ))</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="ornstein-uhlenbeck">
+            <header class="ref-head">
+              <div><h4>Ornstein-Uhlenbeck</h4><p class="ref-name">Mean-reverting process</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="ornsteinUhlenbeck" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">AR(1) com reversão à média. Modula a taxa junto com o pink noise (abaixo).</p>
+            <div class="ref-meta">
+              <code>X[t+1] = φ·X[t] + ε</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="pink">
+            <header class="ref-head">
+              <div><h4>Ruído 1/f (Pink)</h4><p class="ref-name">Pink noise · 3 octaves</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="pink" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">3 oitavas de OU combinadas. Modula a taxa de correção em ±30% e a curvatura do Bézier.</p>
+            <div class="ref-params">
+              <label>Tau A (ms)<input type="number" data-organic-val="pink.tauAMs" value="800" min="50" max="2000" step="10"></label>
+              <label>Tau B (ms)<input type="number" data-organic-val="pink.tauBMs" value="400" min="20" max="1000" step="10"></label>
+              <label>Tau C (ms)<input type="number" data-organic-val="pink.tauCMs" value="200" min="10" max="500" step="5"></label>
+              <label>Peso A<input type="number" data-organic-val="pink.weightA" value="0.25" min="0" max="1" step="0.05"></label>
+              <label>Peso B<input type="number" data-organic-val="pink.weightB" value="0.33" min="0" max="1" step="0.05"></label>
+              <label>Peso C<input type="number" data-organic-val="pink.weightC" value="0.42" min="0" max="1" step="0.05"></label>
+              <label>Rate mod<input type="number" data-organic-val="pink.rateMod" value="0.30" min="0" max="2" step="0.05"></label>
+            </div>
+            <div class="ref-meta">
+              <code>0.25·A + 0.33·B + 0.42·C</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="smoothstep">
+            <header class="ref-head">
+              <div><h4>Minimum-jerk</h4><p class="ref-name">Minimum-jerk profile</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="smoothstep" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Perfil de velocidade minimum-jerk (Flash & Hogan). Substitui a interpolação linear.</p>
+            <div class="ref-meta">
+              <code>10t³ − 15t⁴ + 6t⁵</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="bezier2">
+            <header class="ref-head">
+              <div><h4>Bézier Quadrática</h4><p class="ref-name">Quadratic Bézier curve</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="bezier2" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Trajetória curva com ponto de controle perpendicular aleatório. Quebra o padrão retilíneo.</p>
+            <div class="ref-meta">
+              <code>mt²·P0 + 2mt·t·P1 + t²P2</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="jitterGauss">
+            <header class="ref-head">
+              <div><h4>Jitter Gaussiano</h4><p class="ref-name">Per-report Gaussian jitter</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="jitterGauss" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Ruído gaussiano zero-média por relatório. A escala é o desvio padrão em px.</p>
+            <div class="ref-params">
+              <label>Escala (px)<input type="number" data-organic-val="jitterGauss.scale" value="0.05" min="0" max="0.5" step="0.01"></label>
+            </div>
+            <div class="ref-meta">
+              <code>gauss(0, 0.05 px)</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="tremor10hz">
+            <header class="ref-head">
+              <div><h4>Tremor Fisiológico</h4><p class="ref-name">Physiological tremor</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="tremor10hz" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Oscilação senoidal a ~10 Hz, frequência neuromuscular humana.</p>
+            <div class="ref-params">
+              <label>Freq (Hz)<input type="number" data-organic-val="tremor10hz.hz" value="10" min="4" max="20" step="0.5"></label>
+              <label>Amp (px)<input type="number" data-organic-val="tremor10hz.amp" value="0.4" min="0" max="2" step="0.05"></label>
+            </div>
+            <div class="ref-meta">
+              <code>sin(2π·10·t) × amp</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="overshoot">
+            <header class="ref-head">
+              <div><h4>Overshoot + Correção</h4><p class="ref-name">Overshoot &amp; correction</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="overshoot" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Em X% dos passos, ultrapassa o alvo em 3–12% da distância e depois corrige.</p>
+            <div class="ref-params">
+              <label>Prob %<input type="number" data-organic-val="overshoot.pct" value="15" min="0" max="100" step="1"></label>
+              <label>Mag mín<input type="number" data-organic-val="overshoot.min" value="0.03" min="0" max="0.5" step="0.01"></label>
+              <label>Mag máx<input type="number" data-organic-val="overshoot.max" value="0.12" min="0" max="0.5" step="0.01"></label>
+              <label>Correção×<input type="number" data-organic-val="overshoot.correction" value="0.5" min="0.1" max="2" step="0.1"></label>
+            </div>
+            <div class="ref-meta">
+              <code>mag = 3%…12% da dist</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="fitts">
+            <header class="ref-head">
+              <div><h4>Desaceleração Progressiva</h4><p class="ref-name">Progressive deceleration</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="fitts" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Passos ficam mais lentos conforme o burst envelhece. Simula "ajuste fino" progressivo.</p>
+            <div class="ref-params">
+              <label>Escala<input type="number" data-organic-val="fitts.scale" value="0.30" min="0" max="1" step="0.05"></label>
+              <label>Máx<input type="number" data-organic-val="fitts.max" value="0.50" min="0" max="2" step="0.05"></label>
+            </div>
+            <div class="ref-meta">
+              <code>1 + min(age·scale, max)</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="fatigue">
+            <header class="ref-head">
+              <div><h4>Fadiga Progressiva</h4><p class="ref-name">Progressive fatigue</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="fatigue" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Jitter cresce com a idade do burst. Simula cansaço muscular.</p>
+            <div class="ref-params">
+              <label>Const. tempo (ms)<input type="number" data-organic-val="fatigue.halfMs" value="60000" min="10000" max="120000" step="5000"></label>
+              <label>Máx<input type="number" data-organic-val="fatigue.max" value="0.60" min="0" max="2" step="0.05"></label>
+            </div>
+            <div class="ref-meta">
+              <code>1 + 0.6·(1 − e^(−age/60s))</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+          <article class="ref-card" data-tech="pause">
+            <header class="ref-head">
+              <div><h4>Micro-pausa Reativa</h4><p class="ref-name">Reactive hesitation</p></div>
+              <label class="switch small" title="Ativar">
+                <input type="checkbox" data-organic-toggle="pause" checked>
+                <span class="switch-track"><span class="switch-knob"></span></span>
+              </label>
+            </header>
+            <p class="ref-desc">Pausa periódica + pausa reativa quando o drift acumulado ultrapassa um limiar.</p>
+            <div class="ref-params">
+              <label>Pausa %<input type="number" data-organic-val="pause.pct" value="2" min="0" max="100" step="1"></label>
+              <label>Pausa mín (ms)<input type="number" data-organic-val="pause.minMs" value="30" min="0" max="300" step="5"></label>
+              <label>Pausa máx (ms)<input type="number" data-organic-val="pause.maxMs" value="90" min="0" max="500" step="5"></label>
+              <label>Drift (px)<input type="number" data-organic-val="pause.reactiveDriftPx" value="6.0" min="0" max="20" step="0.5"></label>
+              <label>Reativa %<input type="number" data-organic-val="pause.reactivePausePct" value="15" min="0" max="100" step="1"></label>
+              <label>Damp<input type="number" data-organic-val="pause.reactiveDamp" value="0.70" min="0" max="1" step="0.05"></label>
+            </div>
+            <div class="ref-meta">
+              <code>if |drift| &gt; 6 px</code>
+              <span class="ref-status" data-s="rc">Recoil</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </details>
+
+    <!-- ACCORDION 3: ESTUDOS -->
+    <details class="tech-accordion">
+      <summary>Estudos <span class="acc-count">7 REFERÊNCIAS</span></summary>
+      <div class="accordion-content">
+        <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:-4px;">Técnicas não implementadas no firmware atual. Referência teórica para futuras expansões.</p>
+        <div class="natural-grid">
+          <article class="ref-card"><header class="ref-head"><div><h4>Exponencial / Poisson</h4><p class="ref-name">Poisson process</p></div></header><p class="ref-desc">Chegada de eventos com taxa média. Pausas longas ocasionais.</p><div class="ref-meta"><code>−ln(U)/λ</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Ruído Branco</h4><p class="ref-name">White noise</p></div></header><p class="ref-desc">Amplitude constante em todas as frequências, sem correlação.</p><div class="ref-meta"><code>N(0, σ)</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Perlin / Simplex</h4><p class="ref-name">Gradient noise</p></div></header><p class="ref-desc">Ruído suave e contínuo. Alternativa ao 1/f para jitter espacial.</p><div class="ref-meta"><code>noise(x·f, y·f, t)</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Linear</h4><p class="ref-name">Linear interpolation</p></div></header><p class="ref-desc">Movimento em linha reta. Assinatura mais óbvia de máquina.</p><div class="ref-meta"><code>p(t) = a + t·(b−a)</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Min-Jerk</h4><p class="ref-name">Minimum-jerk profile</p></div></header><p class="ref-desc">Perfil de velocidade ótimo para movimento humano (Flash &amp; Hogan).</p><div class="ref-meta"><code>10t³ − 15t⁴ + 6t⁵</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Bézier Cúbica</h4><p class="ref-name">Cubic Bézier curve</p></div></header><p class="ref-desc">Curvatura em S. Ideal para trajetórias longas.</p><div class="ref-meta"><code>4 pts, 3 segmentos</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+          <article class="ref-card"><header class="ref-head"><div><h4>Jitter Coerente</h4><p class="ref-name">Perlin-based jitter</p></div></header><p class="ref-desc">Jitter por Perlin. Movimentos vizinhos correlacionados.</p><div class="ref-meta"><code>noise(t, 0, 0) × amp</code><span class="ref-status" data-s="study">Estudo</span></div></article>
+        </div>
+      </div>
+    </details>
+
+  </section>
+
+  <!-- ==================== AÇÕES ==================== -->
+  <footer class="actions reveal" style="--i:4">
+    <div class="actions-left">
+      <button class="btn modules-nav" type="button" id="system-modules-btn" aria-pressed="false" aria-controls="modules-view">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/>
+        </svg>
+        Bio-Emulation
+      </button>
+    </div>
+    <div class="actions-right">
+      <button class="btn" type="button" id="load-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Carregar config
+      </button>
+      <button class="btn" type="button" id="save-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        Salvar como
+      </button>
+      <button class="btn device" type="button" id="pull-btn" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"/></svg>
+        Ler do Pico
+      </button>
+      <button class="btn device" type="button" id="push-btn" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M7 14l5-5 5 5M5 4h14"/></svg>
+        Enviar ao Pico
+      </button>
+      <button class="btn primary" type="button" id="connect-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/></svg>
+        Conectar dispositivo
+      </button>
+    </div>
+  </footer>
+
+  <div class="terminal" id="terminal" aria-live="polite" aria-label="Serial log"></div>
+
+  <footer class="app-footer">
+    <span class="app-footer-name">HIDE · Hardware Input Dynamic Emulator</span>
+    <span class="app-footer-meta">
+      <span>App <span id="footer-app-version">v1.0</span></span>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <span>Firmware <span id="footer-firmware-version">v1.0</span></span>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <span>Raspberry Pi Pico (RP2040)</span>
+    </span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

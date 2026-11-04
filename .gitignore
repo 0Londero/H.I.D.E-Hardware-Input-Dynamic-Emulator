@@ -1,0 +1,26 @@
+# Arquivos temporários
+temp/
+
+# Python (se usar scripts em Python)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Node (se usar dependências JS)
+node_modules/
+
+# Segredos e variáveis de ambiente
+.env
+.env.*
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs
+*.log
+
+# Ferramentas do agente
+.opencode/
