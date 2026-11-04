@@ -122,20 +122,59 @@ Avisos: nunca solde alimentado; nunca inverta 5V/GND; nunca ligue VBUS no 3V3.
 
 ## Firmware (compilar e gravar)
 
-1. [Arduino IDE](https://www.arduino.cc/en/software) com o core
-   [Raspberry Pi Pico/RP2040](https://github.com/earlephilhower/arduino-pico) (Earle Philhower).
-2. Bibliotecas: [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino),
-   [Pico-PIO-USB](https://github.com/sekigon-gps/Pico-PIO-USB) (sekigon-gps),
-   [ArduinoJson v6](https://arduinojson.org/).
-3. Placa "Raspberry Pi Pico"; *Tools → USB Stack* = "Adafruit TinyUSB" e
-   *Tools → CPU Speed* = 240 MHz.
-4. Abra `firmware/firmware.ino` e compile/envie.
+Passo a passo no [Arduino IDE](https://www.arduino.cc/en/software):
+
+1. **Instale o core** Raspberry Pi Pico/RP2040 (Earle Philhower):
+   - *File → Preferences → Additional boards manager URLs*: adicione
+     `https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json`
+   - *Tools → Board → Boards Manager*: procure "Raspberry Pi Pico/RP2040"
+     e instale.
+2. **Instale as bibliotecas** (*Sketch → Include Library → Manage Libraries*):
+   - [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino)
+   - [Pico-PIO-USB](https://github.com/sekigon-gps/Pico-PIO-USB) (sekigon-gps)
+   - [ArduinoJson](https://arduinojson.org/) v6
+3. **Configure a placa** (*Tools*):
+   - Board: **Raspberry Pi Pico**
+   - USB Stack: **Adafruit TinyUSB**
+   - CPU Speed: **240 MHz** (o PIO-USB exige clock múltiplo de 12 MHz; o padrão de 125 MHz não funciona)
+4. Abra `firmware/firmware.ino` e clique em **Upload** (seta para a direita).
+5. Se o IDE não achar a porta: segure **BOOTSEL**, conecte o USB e solte (aparece
+   a unidade `RPI-RP2`); depois envie de novo.
+
+> Dica: antes do firmware principal, grave `firmware/teste_dongle/teste_dongle.ino`
+> para confirmar que o dongle do mouse é reconhecido e aceita boot protocol.
+
+### Persistência das configurações
+
+O firmware salva a configuração na **EEPROM** (512 bytes, emulada em flash) e
+recarrega no boot. Ou seja: ao desconectar e reconectar o Pico, a última
+configuração volta sozinha. Usar o site é opcional, só para mudar algo.
+
+- Salva ao **Enviar ao Pico**, ao alternar o fast-fire pelo botão do meio e ao
+  ajustar o CPS pelo scroll.
+- Os **Perfis A/B** ficam no site (navegador/arquivo), não no Pico: o firmware
+  guarda **um** estado ativo.
+- Reflash com layout/magic de EEPROM diferente (ou apagar a flash) volta aos
+  padrões no próximo boot.
 
 ## Site (configurar)
 
 1. Abra `html/index.html` no Chrome ou Edge.
 2. Conecte o Pico e clique em "Conectar dispositivo"; escolha a porta do Pico.
 3. Ajuste os valores, salve perfis e "Envie ao Pico".
+
+### Interface
+
+<table>
+  <tr>
+    <td align="center"><img src="readmeassets/web-dashboard.png" alt="Dashboard do site: Recoil Control e Fast-fire" width="400"></td>
+    <td align="center"><img src="readmeassets/web-bio.png" alt="Aba Bio-Emulation com as técnicas de biometria comportamental" width="400"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Dashboard (Recoil Control + Fast-fire)</sub></td>
+    <td align="center"><sub>Behavioral Biometrics Spoofing</sub></td>
+  </tr>
+</table>
 
 ## Controles pelo mouse (sem o site)
 
