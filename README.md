@@ -166,9 +166,11 @@ scripts/       scripts auxiliares
 
 ## A utopia: Teensy 4.1
 
+<img align="right" src="readmeassets/oL.gif" width="180" alt="custo">
+
 Quando eu comecei, queria usar uma **Teensy 4.1** (NXP i.MX RT1062). Todo mundo
 que eu consultei disse que ela era a placa ideal para esse tipo de projeto. Ela
-é mesmo a mais próxima da "placa perfeita", mas o preço... <img src="readmeassets/oL.gif" width="80" alt="custo" style="vertical-align:middle">
+é mesmo a mais próxima da "placa perfeita", mas o preço...
 
 Ela custa uns R$ 550 a R$ 880 importada (não tem revenda no Brasil), enquanto o
 Pico oficial sai por R$ 36 a R$ 40 (e clones por R$ 19 a R$ 25). Ou seja, a
