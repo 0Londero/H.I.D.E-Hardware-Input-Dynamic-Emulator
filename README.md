@@ -130,16 +130,26 @@ Passo a passo no [Arduino IDE](https://www.arduino.cc/en/software):
    - *Tools → Board → Boards Manager*: procure "Raspberry Pi Pico/RP2040"
      e instale.
 2. **Instale as bibliotecas** (*Sketch → Include Library → Manage Libraries*):
-   - [Adafruit TinyUSB](https://github.com/adafruit/Adafruit_TinyUSB_Arduino)
-   - [Pico-PIO-USB](https://github.com/sekigon-gps/Pico-PIO-USB) (sekigon-gps)
-   - [ArduinoJson](https://arduinojson.org/) v6
+   - [Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB) (sekigon-gonnoc)
+   - [ArduinoJson](https://arduinojson.org/) **6.x.x** (use estritamente a v6; a
+     v7 muda o modelo de memória e deprecia APIs usadas no firmware)
+   - Quando o gerenciador perguntar, marque **Install all dependencies**.
+   - Obs.: o **Adafruit TinyUSB já vem embutido no core** arduino-pico. Não
+     instale uma cópia extra pelo Library Manager (gera o aviso de "multiple
+     libraries"). Se já instalou, desinstale para evitar conflito.
 3. **Configure a placa** (*Tools*):
    - Board: **Raspberry Pi Pico**
-   - USB Stack: **Adafruit TinyUSB**
-   - CPU Speed: **240 MHz** (o PIO-USB exige clock múltiplo de 12 MHz; o padrão de 125 MHz não funciona)
+   - USB Stack: **Adafruit TinyUSB** (a opção normal; não use a Host (native))
+   - CPU Speed: **240 MHz** (o PIO-USB exige clock múltiplo de 12 MHz; o padrão
+     de 125 MHz não funciona)
 4. Abra `firmware/firmware.ino` e clique em **Upload** (seta para a direita).
-5. Se o IDE não achar a porta: segure **BOOTSEL**, conecte o USB e solte (aparece
-   a unidade `RPI-RP2`); depois envie de novo.
+5. **Primeira gravação** (Pico novo, sem firmware): segure **BOOTSEL**, conecte o
+   USB e solte (aparece a unidade `RPI-RP2`). Em *Tools → Port*, selecione
+   **UF2 Boards** (é o Pico em modo bootloader) e clique em Upload. Alternativa:
+   *Sketch → Export Compiled Binary* e arraste o `.uf2` para dentro da unidade
+   `RPI-RP2`.
+6. Depois da primeira gravação, o Pico passa a aparecer como **porta COM**; nas
+   próximas, selecione essa COM e grave normalmente.
 
 > Dica: antes do firmware principal, grave `firmware/teste_dongle/teste_dongle.ino`
 > para confirmar que o dongle do mouse é reconhecido e aceita boot protocol.
