@@ -85,6 +85,11 @@ Notas:
   dongle 2.4 GHz. Eu uso o Razer Orochi V2 (sem fio) para mostrar que isso
   também funciona.
 - No Orochi V2, configure o polling em **500 Hz** no Razer Synapse.
+- ⚠️ **Limitação atual (temporária)**: mouses que enviam relatórios de 8 bytes
+  em boot protocol (ex.: Razer Orochi V2, Basilisk) travam o host PIO-USB após
+  um tempo (relatórios vazios + desconexão). Correção em andamento na
+  [PR #206 do Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB/pull/206).
+  Enquanto isso, use um mouse de 3 bytes (a maioria dos mouses comuns).
 - 33 Ω funciona no lugar dos 22 Ω recomendados; com fios curtos é tranquilo.
 
 ## Montagem (solda)
