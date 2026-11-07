@@ -82,12 +82,10 @@ A peça **recomendada** e a que **eu usei** (as duas funcionam):
 Notas:
 
 - O mouse pode ser **qualquer um** que conecte por USB: com fio ou sem fio via
-  dongle 2.4 GHz. Eu uso o Razer Orochi V2 (sem fio) para mostrar que isso
-  também funciona.
-- No Orochi V2, configure o polling em **500 Hz** no Razer Synapse.
-- ⚠️ **Limitação atual (temporária)**: mouses que enviam relatórios de 8 bytes
-  em boot protocol (ex.: Razer Orochi V2, Basilisk) travam o host PIO-USB após
-  um tempo (relatórios vazios + desconexão). Correção em andamento na
+  dongle 2.4 GHz. Eu testei com mouses **Razer** (Orochi V2 e Basilisk).
+- ⚠️ **Limitação atual (temporária)**: mouses Razer enviam relatórios de **8 bytes**
+  em boot protocol e travam o host PIO-USB após um tempo (relatórios vazios +
+  desconexão). Correção em andamento na
   [PR #206 do Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB/pull/206).
   Enquanto isso, use um mouse de 3 bytes (a maioria dos mouses comuns).
 - 33 Ω funciona no lugar dos 22 Ω recomendados; com fios curtos é tranquilo.
@@ -209,7 +207,8 @@ entrega no máximo cerca de 500 relatórios por segundo.
   cerca de 500/s. A fila enche e parte do movimento é descartada. Funciona, mas
   sem ganho e com perda de suavidade.
 
-Por isso o guia recomenda **500 Hz** no Razer Synapse. Em uma placa com USB
+Por isso o guia recomenda **500 Hz**: configure o polling no app do seu mouse
+(Razer Synapse, Logitech G HUB, etc.), se ele permitir. Em uma placa com USB
 high-speed (como a Teensy 4.1), dá para configurar o device para 1 ms e usar
 1000 Hz (ou até 8 kHz) sem descarte.
 
