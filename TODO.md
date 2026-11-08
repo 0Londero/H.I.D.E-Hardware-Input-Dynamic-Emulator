@@ -175,23 +175,18 @@ mas o firmware não muda e dá para adiar sem perder nada do design.
   boot protocol, implementar a leitura do report protocol (parse do descriptor HID).
 - Esforço: alto. Viabilidade: viável se o dongle exigir.
 
-## 9.5 Bug do PIO-USB com mouses de 8 bytes (Razer)
-- Mouses que enviam relatórios de 8 bytes em boot protocol (Razer Orochi V2,
-  Basilisk) fazem o host PIO-USB degradar após ~centenas de relatórios:
-  "len=0" (relatórios vazios) e depois desconexão espúria. Mouse genérico de
+## 9.5 Mouses Razer (8 bytes) não funcionam no PIO-USB
+- Mouses Razer (Orochi V2, Basilisk) enviam relatórios de 8 bytes em boot
+  protocol e, após alguns segundos (centenas de relatórios), param de responder
+  ao host PIO-USB (timeout na recepção, depois desconexão). Mouse genérico de
   3 bytes funciona normalmente.
-- Causa raiz: bug no driver PIO-USB (state machine RX dessincronizando com
-  relatórios maiores que o boot report de 3 bytes).
-- Em andamento: PR #206
-  (https://github.com/sekigon-gonnoc/Pico-PIO-USB/pull/206), que corrige
-  desconexão espúria (debounce SE0), reinício do sm_eop e waits com timeout.
-  Ainda não foi mergeada na 0.7.3.
-- Tentado sem sucesso: report protocol (mesmo formato de 8 bytes, mesma
-  degradação); aplicar manualmente 2 correções da PR (debounce + sm_eop), que
-  não resolveram por completo.
-- Alternativa definitiva: trocar para o host USB nativo do RP2040 (hcd_rp2040),
-  com PIO-USB no modo device + pull-up de 1,5 kΩ no D+. Mudança grande.
-- Esforço: alto. Viabilidade: aguardar merge da PR ou trocar arquitetura.
+- Diagnóstico feito (instrumentação do resultado da transferência): a falha é
+  FAILED por timeout (nenhum byte recebido), não STALL, não CRC/enquadramento.
+  O dispositivo simplesmente para de responder.
+- Testado sem sucesso: PR #206, PR #211 (realinhamento de 1 bit), report
+  protocol, debounce SE0. Não há correção conhecida.
+- Conclusão: não funciona. Usar mouse de 3 bytes.
+- Esforço: alto. Viabilidade: sem correção conhecida no momento.
 
 ---
 
@@ -235,7 +230,7 @@ mas o firmware não muda e dá para adiar sem perder nada do design.
 ---
 
 ## 13. Teste físico (quando o Pico chegar)
-- Gravar o sketch de teste (firmware/teste_dongle/teste_dongle.ino) para validar o
-  boot protocol do dongle do mouse.
+- Gravar o sketch de teste (firmware/teste_mouse/teste_mouse.ino) para validar o
+  boot protocol do mouse.
 - Testar o fast-fire com o mouse parado (deve funcionar apos a refatoracao).
 - Testar o ajuste de CPS pelo scroll (depende do mouse enviar o 4o byte).

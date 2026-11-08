@@ -83,11 +83,9 @@ Notas:
 
 - O mouse pode ser **qualquer um** que conecte por USB: com fio ou sem fio via
   dongle 2.4 GHz. Eu testei com mouses **Razer** (Orochi V2 e Basilisk).
-- ⚠️ **Limitação atual (temporária)**: mouses Razer enviam relatórios de **8 bytes**
-  em boot protocol e travam o host PIO-USB após um tempo (relatórios vazios +
-  desconexão). Correção em andamento na
-  [PR #206 do Pico-PIO-USB](https://github.com/sekigon-gonnoc/Pico-PIO-USB/pull/206).
-  Enquanto isso, use um mouse de 3 bytes (a maioria dos mouses comuns).
+- ⚠️ **Limitação**: mouses Razer (que enviam relatórios de **8 bytes** em boot
+  protocol) param de responder após alguns segundos no host PIO-USB e não
+  funcionam. Use um mouse de 3 bytes (a maioria dos mouses comuns).
 - 33 Ω funciona no lugar dos 22 Ω recomendados; com fios curtos é tranquilo.
 
 ## Montagem (solda)
@@ -154,8 +152,8 @@ Passo a passo no [Arduino IDE](https://www.arduino.cc/en/software):
 6. Depois da primeira gravação, o Pico passa a aparecer como **porta COM**; nas
    próximas, selecione essa COM e grave normalmente.
 
-> Dica: antes do firmware principal, grave `firmware/teste_dongle/teste_dongle.ino`
-> para confirmar que o dongle do mouse é reconhecido e aceita boot protocol.
+> Dica: antes do firmware principal, grave `firmware/teste_mouse/teste_mouse.ino`
+> para testar o mouse (reconhecimento, boot protocol e relatórios).
 
 ### Persistência das configurações
 

@@ -1,16 +1,16 @@
 /**
- * H.I.D.E - Teste do dongle / mouse
- * =================================
- * Diagnostica se o mouse (ex.: Razer Orochi V2 via dongle 2.4 GHz) e
- * reconhecido pelo PIO-USB e se aceita o "boot protocol".
+ * H.I.D.E - Teste do mouse
+ * ========================
+ * Sketch de diagnostico: confirma se o mouse e reconhecido pelo PIO-USB,
+ * se aceita o "boot protocol" e mostra os relatorios recebidos.
  *
  * Como usar:
  *   1. Configure Tools > USB Stack = "Adafruit TinyUSB" e CPU Speed = 240 MHz.
  *   2. Abra o Monitor Serial (115200 baud).
- *   3. Conecte o dongle no conector USB-A soldado ao Pico.
+ *   3. Conecte o mouse (com fio ou via dongle 2.4 GHz) no conector USB-A.
  *   4. Interpretacao:
- *      - "mouse montado" + "BOOT PROTOCOL OK" + bytes de X/Y mudando ao mexer
- *        => dongle OK. Pode gravar o firmware principal (firmware.ino).
+ *      - "mouse montado" + "BOOT PROTOCOL OK" + bytes mudando ao mexer
+ *        => mouse OK. Pode gravar o firmware principal (firmware.ino).
  *      - "ainda em REPORT protocol" => o firmware principal precisa ler
  *        "report protocol" (adaptar o parser HID).
  *      - nada aparece => problema de solda, clock ou cabo.
@@ -110,8 +110,8 @@ void setup() {
     if (!TinyUSBDevice.isInitialized()) TinyUSBDevice.begin(0);
     Serial.begin(115200);
     delay(100);
-    Serial.println("H.I.D.E - teste do dongle");
-    Serial.println("Plugue o dongle no conector USB-A e observe o log.");
+    Serial.println("H.I.D.E - teste do mouse");
+    Serial.println("Plugue o mouse no conector USB-A e observe o log.");
 }
 
 void loop() {
